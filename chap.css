@@ -1,0 +1,123 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    background: black url(./background.svg);
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ===== HEADER ===== */
+.constant{
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(0,0,0,.85);
+    box-shadow: 0 0 10px #4da3ff;
+    border-radius: 10px;
+}
+
+.pic img{
+    max-width: 150px;
+    height: auto;
+}
+
+.text{
+    display: flex;
+    gap: 15px;
+}
+
+.text a{
+    color: #4da3ff;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* ===== CONTENT ===== */
+#to{
+    text-align: center;
+    font-size: 26px;
+    color: #4da3ff;
+    margin: 30px 0;
+}
+
+#p{
+    max-width: 900px;
+    margin: auto;
+    font-size: 18px;
+    line-height: 1.8;
+    text-align: center;
+    padding: 0 15px;
+}
+
+img{
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* ===== BUTTON ===== */
+.free{
+    margin: 20px auto;
+    padding: 12px 25px;
+    font-size: 20px;
+    border-radius: 20px;
+    background: transparent;
+    border: 2px solid #f0f;
+    cursor: pointer;
+}
+
+.free a{
+    color: #f0f;
+    text-decoration: none;
+}
+
+/* ===== FOOTER ===== */
+.veiw{
+    margin-top: 40px;
+    padding: 20px;
+}
+
+.botton-img{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.size{
+    padding: 10px;
+    border-radius: 50%;
+    background-image: linear-gradient(to right, #000, #c9c9c9);
+}
+
+#ahmed{
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 16px;
+    color: #c9c9c9;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px){
+    .constant{
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #p{
+        font-size: 16px;
+    }
+}
