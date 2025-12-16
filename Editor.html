@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SZG JavaScript Editor</title>
+<link rel="icon" href="Icon.png">
+<style>
+*{box-sizing:border-box;font-family:"Consolas", monospace;margin:0;padding:0;}
+body{transition:all 0.3s;height:100vh;display:flex;flex-direction:column;}
+header{display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid #30363d;flex-wrap:wrap;}
+header img{width:28px;height:28px;}
+header .title{flex:1;font-size:16px;}
+header button, select{padding:6px 14px;border:none;border-radius:6px;cursor:pointer;color:white;background:#238636;}
+header button#clear{background:#da3633;}
+header select{background:#4da3ff;color:white;}
+main{flex:1;display:flex;overflow:hidden;min-height:0;}
+.editor, .output{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.editor{border-right:1px solid #30363d;}
+textarea{flex:1;padding:15px;font-size:14px;border:none;outline:none;resize:none;overflow:auto;white-space:pre-wrap;line-height:1.4;background:transparent;color:inherit;caret-color:#4da3ff;}
+.output .console-title{padding:8px;border-bottom:1px solid #30363d;}
+#console{flex:1;padding:10px;overflow:auto;white-space:pre-wrap;font-family:monospace;font-size:14px;background:transparent;}
+iframe{display:none;}
+:root{
+  --bg-dark:#0d1117; --text-dark:#c9d1d9; --console-dark:#010409; --highlight-dark:#58a6ff;
+  --bg-light:#f5f5f5; --text-light:#222; --console-light:#e0e0e0; --highlight-light:#007acc;
+  --bg-neon:#0f0f2a; --text-neon:#39ff14; --console-neon:#000; --highlight-neon:#ff00ff;
+  --bg-solar:#002b36; --text-solar:#839496; --console-solar:#073642; --highlight-solar:#b58900;
+}
+.dark{background:var(--bg-dark);color:var(--text-dark);}
+.dark #console{background:var(--console-dark);color:var(--highlight-dark);}
+.dark .console-title{color:var(--highlight-dark);}
+.light{background:var(--bg-light);color:var(--text-light);}
+.light #console{background:var(--console-light);color:var(--highlight-light);}
+.light .console-title{color:var(--highlight-light);}
+.neon{background:var(--bg-neon);color:var(--text-neon);}
+.neon #console{background:var(--console-neon);color:var(--highlight-neon);}
+.neon .console-title{color:var(--highlight-neon);}
+.solar{background:var(--bg-solar);color:var(--text-solar);}
+.solar #console{background:var(--console-solar);color:var(--highlight-solar);}
+.solar .console-title{color:var(--highlight-solar);}
+@media(max-width:1000px){main{flex-direction:column;}.editor,.output{flex:1;height:50%;}}
+</style>
+</head>
+<body class="dark">
+<header>
+<img src="Icon.png">
+<span class="title">SZG JavaScript Editor</span>
+<button id="run">▶ Run</button>
+<button id="clear">✖ Clear</button>
+<select id="themeSelect">
+<option value="dark">Dark</option>
+<option value="light">Light</option>
+<option value="neon">Neon</option>
+<option value="solar">Solarized</option>
+</select>
+</header>
+<main>
+<section class="editor">
+<textarea id="code"></textarea>
+</section>
+<section class="output">
+<div class="console-title">Console</div>
+<pre id="console"></pre>
+<iframe id="sandbox" sandbox="allow-scripts"></iframe>
+</section>
+</main>
+
+<script>
+const runBtn=document.getElementById("run");
+const clearBtn=document.getElementById("clear");
+const codeArea=document.getElementById("code");
+const consoleBox=document.getElementById("console");
+const sandbox=document.getElementById("sandbox");
+
+function logToConsole(msg){consoleBox.textContent+=msg+"\n";}
+
+runBtn.onclick=()=>{
+  consoleBox.textContent="";
+  const userCode=codeArea.value;
+
+  // iframe content for sandbox
+  const iframeContent=`
+    <script>
+      const parentConsole = console;
+      console = {
+        log: (...args) => parent.postMessage({type:'log',data:args.join(' ')}, '*'),
+        error: (...args) => parent.postMessage({type:'log',data:args.join(' ')}, '*')
+      };
+      window.onerror=(msg,url,line)=>{parent.postMessage({type:'log',data:'Error: '+msg+' at line '+line},'*')};
+      try { ${userCode} } catch(e) { parent.postMessage({type:'log',data:'Error: '+e.message},'*'); }
+    <\/script>
+  `;
+  sandbox.srcdoc=iframeContent;
+};
+
+clearBtn.onclick=()=>{consoleBox.textContent="";};
+
+// Theme switch
+document.getElementById("themeSelect").onchange=function(){document.body.className=this.value;};
+
+// Receive console.log from iframe
+window.addEventListener("message", e=>{
+  if(e.data.type==='log'){logToConsole(e.data.data);}
+});
+
+// Auto-pair brackets & quotes
+const pairs={'(':')','{':'}','[':']','"':'"',"'" : "'"};
+codeArea.addEventListener("keydown",e=>{
+  const start=codeArea.selectionStart;
+  const end=codeArea.selectionEnd;
+  const val=codeArea.value;
+  if(Object.keys(pairs).includes(e.key)){
+    e.preventDefault();
+    const closeChar=pairs[e.key];
+    codeArea.value=val.slice(0,start)+e.key+closeChar+val.slice(end);
+    codeArea.selectionStart=codeArea.selectionEnd=start+1;
+  } else if(Object.values(pairs).includes(e.key)){
+    if(val[start]===e.key){
+      e.preventDefault();
+      codeArea.selectionStart=codeArea.selectionEnd=start+1;
+    }
+  }
+});
+</script>
+</body>
+</html>
