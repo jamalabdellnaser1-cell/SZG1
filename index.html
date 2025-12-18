@@ -59,183 +59,231 @@
     </button>
 </div>
 
-<!-- ================= SZG AI CHAT BOT ================= -->
+<!-- ===== SZG BRAND CHAT ===== -->
 
-<!-- زر الشات -->
-<div id="ai-chat-btn" title="مساعد SZG">
-  <svg width="26" height="26" viewBox="0 0 24 24">
-    <path fill="white"
-      d="M12 2C6.5 2 2 6 2 11c0 2.4 1.1 4.6 3 6.2V22l4.2-2.3c.9.2 1.9.3 2.8.3 5.5 0 10-4 10-9s-4.5-9-10-9z"/>
-  </svg>
+<div id="szg-launcher">
+  <div class="szg-pulse"></div>
+  <span>SZG</span>
 </div>
 
-<!-- صندوق الشات -->
-<div id="ai-chat-box">
-  <div class="ai-header">
-    <span>SZG AI Assistant</span>
-    <button id="close-chat">✕</button>
+<div id="szg-chat">
+  <div class="szg-header">
+    <div class="szg-logo">SZG</div>
+    <div class="szg-title">
+      <strong>SZG Assistant</strong>
+      <small>Online • يرد فورًا</small>
+    </div>
+    <button onclick="szgToggle()">✕</button>
   </div>
 
-  <div id="ai-messages">
-    <div class="bot-msg">
-      👋 مرحباً  
-      أنا <b>SZG</b>، المساعد الذكي الخاص بالموقع  
-      اسألني عن أي شيء يخص هذه الصفحة
+  <div id="szg-body">
+    <div class="szg-bot">
+      👋 مرحبًا، أنا <b>SZG</b><br>
+      المساعد الرسمي للموقع.<br>
+      اسألني أو اطلب تواصل مباشر.
     </div>
   </div>
 
-  <div class="ai-input">
-    <input id="user-input" placeholder="اكتب سؤالك هنا..." />
-    <button id="send-btn">إرسال</button>
+  <div class="szg-input">
+    <input id="szg-text" placeholder="اكتب رسالتك هنا..." />
+    <button onclick="szgSend()">➤</button>
   </div>
 </div>
 
 <style>
-#ai-chat-btn{
+:root{
+  --szg-main:#0f172a;
+  --szg-accent:#06b6d4;
+  --szg-bg:#f8fafc;
+}
+
+#szg-launcher{
   position:fixed;
-  bottom:22px;
   right:22px;
-  width:62px;
-  height:62px;
-  background:linear-gradient(135deg,#1e3cff,#00c6ff);
+  bottom:22px;
+  width:64px;
+  height:64px;
   border-radius:50%;
+  background:linear-gradient(135deg,var(--szg-main),var(--szg-accent));
+  color:#fff;
+  font-weight:700;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  box-shadow:0 10px 25px rgba(0,0,0,.35);
   z-index:9999;
+  box-shadow:0 15px 35px rgba(0,0,0,.35);
 }
 
-#ai-chat-box{
+.szg-pulse{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:var(--szg-accent);
+  opacity:.4;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1);opacity:.4}
+  100%{transform:scale(1.6);opacity:0}
+}
+
+#szg-chat{
   position:fixed;
-  bottom:100px;
   right:22px;
+  bottom:100px;
   width:360px;
-  height:500px;
-  background:#fff;
-  border-radius:18px;
+  height:520px;
+  background:var(--szg-bg);
+  border-radius:20px;
   display:none;
   flex-direction:column;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
+  box-shadow:0 25px 60px rgba(0,0,0,.4);
   z-index:9999;
+  overflow:hidden;
 }
 
-.ai-header{
-  background:linear-gradient(135deg,#1e3cff,#00c6ff);
+.szg-header{
+  background:linear-gradient(135deg,var(--szg-main),var(--szg-accent));
   color:#fff;
   padding:14px;
-  font-weight:bold;
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  border-radius:18px 18px 0 0;
+  gap:10px;
 }
 
-#ai-messages{
+.szg-logo{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#fff;
+  color:var(--szg-main);
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.szg-title small{
+  opacity:.8;
+  font-size:12px;
+}
+
+.szg-header button{
+  margin-left:auto;
+  background:none;
+  border:none;
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+}
+
+#szg-body{
   flex:1;
-  padding:15px;
+  padding:16px;
   overflow-y:auto;
   direction:rtl;
+}
+
+.szg-bot,.szg-user{
+  max-width:85%;
+  padding:12px 14px;
+  margin-bottom:10px;
+  border-radius:14px;
   font-size:14px;
+  animation:fade .3s ease;
 }
 
-.bot-msg{
-  background:#f1f3f6;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  max-width:85%;
+.szg-bot{
+  background:#e2e8f0;
+  color:#000;
 }
 
-.user-msg{
-  background:#1e3cff;
+.szg-user{
+  background:linear-gradient(135deg,var(--szg-main),var(--szg-accent));
   color:#fff;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  max-width:85%;
   margin-right:auto;
 }
 
-.ai-input{
+@keyframes fade{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+
+.szg-input{
   display:flex;
   border-top:1px solid #ddd;
 }
 
-.ai-input input{
+.szg-input input{
   flex:1;
   padding:14px;
   border:none;
   outline:none;
 }
 
-.ai-input button{
-  background:#1e3cff;
+.szg-input button{
+  background:var(--szg-main);
   color:#fff;
   border:none;
-  padding:0 22px;
+  padding:0 20px;
+  font-size:18px;
   cursor:pointer;
-  font-weight:bold;
 }
 </style>
 
 <script>
-const btn = document.getElementById("ai-chat-btn");
-const box = document.getElementById("ai-chat-box");
-const closeBtn = document.getElementById("close-chat");
-const input = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
-const messages = document.getElementById("ai-messages");
+const launcher = document.getElementById("szg-launcher");
+const chat = document.getElementById("szg-chat");
+const body = document.getElementById("szg-body");
+const input = document.getElementById("szg-text");
 
-btn.onclick = () => box.style.display = "flex";
-closeBtn.onclick = () => box.style.display = "none";
+const whatsapp = "https://wa.me/201096504592";
 
-sendBtn.onclick = sendMessage;
-input.addEventListener("keypress", e => {
-  if(e.key === "Enter") sendMessage();
-});
+launcher.onclick = szgToggle;
 
-function speak(text){
-  const s = new SpeechSynthesisUtterance(text);
-  s.lang = "ar-SA";
-  window.speechSynthesis.speak(s);
+function szgToggle(){
+  chat.style.display = chat.style.display === "flex" ? "none" : "flex";
 }
 
-async function sendMessage(){
-  if(!input.value.trim()) return;
+function szgSend(){
+  const text = input.value.trim();
+  if(!text) return;
 
-  const userText = input.value;
-  messages.innerHTML += `<div class="user-msg">${userText}</div>`;
-  input.value = "";
-  messages.scrollTop = messages.scrollHeight;
+  body.innerHTML += `<div class="szg-user">${text}</div>`;
+  input.value="";
+  body.scrollTop = body.scrollHeight;
 
-  const pageInfo = `
-اسم الصفحة: ${document.title}
-رابط الصفحة: ${location.href}
-`;
+  setTimeout(()=>reply(text),700);
+}
 
-  const res = await fetch("https://szg.jamalabdellnaser1.workers.dev", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      messages:[
-        { role:"system", content:pageInfo },
-        { role:"user", content:userText }
-      ]
-    })
-  });
+function reply(msg){
+  const m = msg.toLowerCase();
+  const contactWords = ["تواصل","واتساب","كلم","حجز","خدمة","اتصل","عايز"];
 
-  const data = await res.json();
-  const reply = data.choices[0].message.content;
+  if(contactWords.some(w=>m.includes(w))){
+    body.innerHTML += `
+      <div class="szg-bot">
+        📲 تم تحويلك الآن للتواصل المباشر عبر واتساب
+      </div>`;
+    setTimeout(()=>window.open(whatsapp,"_blank"),1200);
+    return;
+  }
 
-  messages.innerHTML += `<div class="bot-msg">${reply}</div>`;
-  messages.scrollTop = messages.scrollHeight;
-  speak(reply);
+  let r = "يسعدني أساعدك، ممكن توضّح سؤالك أكثر؟";
+
+  if(m.includes("من انت")) r="أنا SZG، المساعد الذكي الرسمي للموقع.";
+  else if(m.includes("خدمات")) r="نقدّم حلول رقمية مصممة باحتراف.";
+  else if(m.includes("شكرا")) r="سعيد بخدمتك 🌟";
+
+  body.innerHTML += `<div class="szg-bot">${r}</div>`;
 }
 </script>
 
-<!-- ================= END SZG AI CHAT BOT ================= -->
+<!-- ===== END SZG ===== -->
+
 
 <footer class="veiw" id="contact">
     <div class="botton-img">
